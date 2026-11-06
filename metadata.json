@@ -1,0 +1,6 @@
+{
+  "name": "NovaFlow — AI Workflow Automation",
+  "description": "High-converting dark-mode SaaS landing page for NovaFlow, an AI productivity and workflow automation platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

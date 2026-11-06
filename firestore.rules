@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidVerificationSession(data) {
+      return data.keys().hasAll(['uid', 'email', 'phone', 'status', 'createdAt']) &&
+        data.keys().hasOnly(['uid', 'email', 'phone', 'status', 'createdAt']) &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        data.uid == request.auth.uid &&
+        data.email is string && data.email.size() >= 5 && data.email.size() <= 160 &&
+        data.phone is string && data.phone.size() >= 8 && data.phone.size() <= 20 &&
+        data.status in ['UNVERIFIED', 'EMAIL_VERIFIED', 'PHONE_VERIFIED', 'FULLY_VERIFIED', 'PAYMENT_LOCKED'] &&
+        data.createdAt is timestamp;
+    }
+
+    match /verificationSessions/{sessionId} {
+      allow get: if isSignedIn() && isValidId(sessionId) && existing().uid == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(sessionId) &&
+        sessionId == request.auth.uid &&
+        isValidVerificationSession(incoming()) &&
+        incoming().createdAt == request.time;
+      allow update, delete, list: if false;
+    }
+  }
+}

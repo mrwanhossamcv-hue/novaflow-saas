@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --animate-hero-headline: hero-fade-up 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-hero-subheadline: hero-fade-up 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.14s both;
+  --animate-hero-actions: hero-fade-up 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both;
+  --animate-hero-preview: hero-scale-up 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+
+  @keyframes hero-fade-up {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 20px, 0);
+    }
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes hero-scale-up {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 24px, 0) scale(0.985);
+    }
+    100% {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: #020617;
+    color: #f1f5f9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
